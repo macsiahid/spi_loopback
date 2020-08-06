@@ -388,46 +388,45 @@ static int spi_write_test(struct device *dev, struct spi_config *spi_conf)
 {
     uint8_t buffer_tx = 0x05;
     int ret;
-    
-	struct spi_buf buf = {
-		.buf = &buffer_tx,
-	    .len = 1
-	};
-	
-	struct spi_buf_set tx = {
-		.buffers = &buf,
-		.count = 1
-	};
-
-	if (IS_ENABLED(CONFIG_SPI_STM32_DMA)) {
-		LOG_INF("DMA enabled");
-	}
-	
-	/* 
-	  * Note: Please remember that implementation for spi_write() (zephyr/include/drivers/spi.h) is: 
-      *  
-      * static inline int spi_write(struct device *dev,
-	  *	                                            const struct spi_config *config,
-	  *	                                            const struct spi_buf_set *tx_bufs)
-      * {
-	  *     return spi_transceive(dev, config, tx_bufs, NULL);
-      * }
-      */
-
-	// ret = spi_transceive(dev, spi_conf, &tx, NULL);
-	ret = spi_write(dev, spi_conf, &tx);
-	LOG_INF("Code %d", ret);
-	
-	ret = spi_write(dev, spi_conf, &tx);
-	LOG_INF("Code %d", ret);
-	
-	if (ret) {
-		LOG_ERR("Code %d", ret);
-		zassert_false(ret, "SPI write failed");
-		return -1;
-	}
-
-	return 0;
+  
+    struct spi_buf buf = {
+        .buf = &buffer_tx,
+        .len = 1
+    };
+  
+    struct spi_buf_set tx = {
+        .buffers = &buf,
+        .count = 1
+    };
+ 
+    if (IS_ENABLED(CONFIG_SPI_STM32_DMA)) {
+        LOG_INF("DMA enabled");
+    }
+  
+    /* 
+     * Note: Please remember that implementation for spi_write() (zephyr/include/drivers/spi.h) is: 
+     *  
+     * static inline int spi_write(struct device *dev
+     *                             const struct spi_config *config,
+     *                             const struct spi_buf_set *tx_bufs)
+     *
+     *     return spi_transceive(dev, config, tx_bufs, NULL);
+     * }
+     */
+  
+    ret = spi_write(dev, spi_conf, &tx);
+    LOG_INF("Code %d", ret);
+  
+    ret = spi_write(dev, spi_conf, &tx);
+    LOG_INF("Code %d", ret);
+  
+    if (ret) {
+        LOG_ERR("Code %d", ret);
+        zassert_false(ret, "SPI write failed");
+        return -1;
+    }
+  
+    return 0;
 }
 
 static int spi_rx_every_4(struct device *dev, struct spi_config *spi_conf)
