@@ -418,13 +418,14 @@ static int spi_write_test(struct device *dev, struct spi_config *spi_conf)
     LOG_INF("Code %d", ret);
   
     ret = spi_write(dev, spi_conf, &tx);
-    LOG_INF("Code %d", ret);
   
     if (ret) {
         LOG_ERR("Code %d", ret);
         zassert_false(ret, "SPI write failed");
         return -1;
     }
+
+    LOG_INF("Code %d", ret);
   
     return 0;
 }
